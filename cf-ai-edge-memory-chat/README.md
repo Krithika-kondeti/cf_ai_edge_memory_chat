@@ -8,7 +8,7 @@ The chatbot runs at the edge and responds to user messages via HTTP requests.
 
 
 
-\## 🚀 Features
+\🚀 Features
 
 \- Cloudflare Workers backend
 
@@ -20,7 +20,7 @@ The chatbot runs at the edge and responds to user messages via HTTP requests.
 
 
 
-\## 🧱 Tech Stack
+\ 🧱 Tech Stack
 
 \- Cloudflare Workers
 
@@ -57,22 +57,12 @@ npx wrangler dev
 
 
 
-
 Open:
-
-
 
 http://127.0.0.1:8787
 
 
 
-
-
-Deployed Version
-
-
-
-The worker is deployed and accessible via Cloudflare Workers.
 
 
 
