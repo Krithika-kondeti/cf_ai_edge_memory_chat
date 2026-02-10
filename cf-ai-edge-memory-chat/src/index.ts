@@ -11,21 +11,39 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export default {
-  async fetch(request: Request, env: any): Promise<Response> {
-    if (request.method === "GET") {
-      return new Response(html, {
-        headers: { "Content-Type": "text/html" }
-      });
+export class ChatMemory {
+  state: DurableObjectState;
+  messages: any[];
+
+  constructor(state: DurableObjectState) {
+    this.state = state;
+    this.messages = [];
+  }
+
+  async fetch(request: Request, env: any) {
+    if (this.messages.length === 0) {
+      this.messages =
+        (await this.state.storage.get("messages")) || [
+          { role: "system", content: "You are a friendly AI chatbot." }
+        ];
     }
 
     if (request.method === "POST") {
-      const { messages } = await request.json();
+      const { message } = await request.json();
+
+      this.messages.push({ role: "user", content: message });
 
       const result = await env.AI.run(
         "@cf/meta/llama-3-8b-instruct",
-        { messages }
+        { messages: this.messages }
       );
+
+      this.messages.push({
+        role: "assistant",
+        content: result.response
+      });
+
+      await this.state.storage.put("messages", this.messages);
 
       return new Response(
         JSON.stringify({ reply: result.response }),
@@ -34,6 +52,20 @@ export default {
     }
 
     return new Response("Method Not Allowed", { status: 405 });
+  }
+}
+
+export default {
+  async fetch(request: Request, env: any) {
+    if (request.method === "GET") {
+      return new Response(html, {
+        headers: { "Content-Type": "text/html" }
+      });
+    }
+
+    const id = env.CHAT_MEMORY.idFromName("default-user");
+    const stub = env.CHAT_MEMORY.get(id);
+    return stub.fetch(request);
   }
 };
 
@@ -54,41 +86,35 @@ const html = `
 </head>
 <body>
   <div id="chat">
-    <h2> AI Chatbot</h2>
+    <h2>AI Chatbot</h2>
     <div id="messages"></div>
     <input id="input" placeholder="Type a message..." />
     <button onclick="send()">Send</button>
   </div>
 
   <script>
-    let messages = [
-      { role: "system", content: "You are a friendly AI chatbot." }
-    ];
-
     async function send() {
       const input = document.getElementById("input");
       const text = input.value;
       if (!text) return;
 
-      messages.push({ role: "user", content: text });
       add("You", text);
       input.value = "";
 
       const res = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages })
+        body: JSON.stringify({ message: text })
       });
 
       const data = await res.json();
-      messages.push({ role: "assistant", content: data.reply });
       add("Bot", data.reply);
     }
 
     function add(who, text) {
       const div = document.createElement("div");
       div.className = "msg";
-      div.innerHTML = "<span class='" + (who === "You" ? "user" : "bot") + "'>" + who + ":</span> " + text;
+      div.innerHTML = "<b>" + who + ":</b> " + text;
       document.getElementById("messages").appendChild(div);
     }
   </script>
