@@ -1,4 +1,4 @@
-\# cf\_ai\_edge\_memory\_chat
+cf\_ai\_edge\_memory\_chat
 
 
 
@@ -8,7 +8,7 @@ The chatbot runs at the edge and responds to user messages via HTTP requests.
 
 
 
-\🚀 Features
+🚀 Features
 
 \- Cloudflare Workers backend
 
@@ -20,7 +20,7 @@ The chatbot runs at the edge and responds to user messages via HTTP requests.
 
 
 
-\ 🧱 Tech Stack
+ 🧱 Tech Stack
 
 \- Cloudflare Workers
 
@@ -32,11 +32,10 @@ The chatbot runs at the edge and responds to user messages via HTTP requests.
 
 
 
-\## 🛠️ Running Locally
+ 🛠️ Running Locally
 
 
-
-\### Prerequisites
+Prerequisites
 
 \- Node.js installed
 
@@ -45,10 +44,7 @@ The chatbot runs at the edge and responds to user messages via HTTP requests.
 \- Cloudflare account
 
 
-
-\### Steps
-
-```bash
+ Steps
 
 npm install
 
