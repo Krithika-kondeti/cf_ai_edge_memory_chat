@@ -22,7 +22,6 @@ Examples:
 
 - "Hello"
 - "Explain Cloudflare Workers"
-- "My name is Krithika"
 - "What is my name?"
 
 These prompts are stored in Durable Objects and sent to Workers AI for context-aware responses.
