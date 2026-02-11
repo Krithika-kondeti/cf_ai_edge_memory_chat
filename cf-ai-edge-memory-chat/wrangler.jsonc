@@ -2,24 +2,28 @@
  * For more details on how to configure Wrangler, refer to:
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
+
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "cf_ai_edge_memory_chat",
   "main": "src/index.ts",
-  "compatibility_date": "2024-11-01",
-
+  "compatibility_date": "2026-02-05",
   "durable_objects": {
     "bindings": [
-      {
-        "name": "CHAT_MEMORY",
-        "class_name": "ChatMemory"
-      }
+      { "name": "CHAT_MEMORY", "class_name": "ChatMemory" }
     ]
   },
-
+  "migrations": [
+    { "tag": "v1", "new_classes": ["ChatMemory"] }
+  ],
   "ai": {
-    "binding": "AI"
+    "binding": "AI",
+    "remote": true
   }
 }
+
+
+
 
 
 	/**
